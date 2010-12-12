@@ -1,0 +1,34 @@
+<style type="text/css">
+  .comiclist
+  {
+    width: 750px;
+  }
+  
+  .comiclist td
+  {
+    padding: 5px 20px 5px 5px;
+  }
+  
+  .comiclist th
+  {
+    text-align: left;    
+  }
+</style>
+
+{% if page != None %}
+{% include 'comicListPaging.html' %}
+<table class="comiclist">
+  <tr>
+    <th>Title</th>
+    <th>Created By</th>
+    <th>Date Created</th>
+  </tr>
+{% for comic in page.object_list %}
+  <tr>
+    <td><a href="/comic/{{comic.id}}/"> {{ comic.title }}</a></td>
+    <td>{{ comic.createdby.username }}</td>    
+    <td>{{ comic.datecreated }}</td>    
+  </tr>
+{% endfor %}
+</table>
+{% endif %}

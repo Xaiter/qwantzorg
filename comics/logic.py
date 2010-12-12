@@ -1,10 +1,23 @@
+import datetime, random, sha, smtplib, httplib, array
 from django.contrib.auth.models import User
 from comics.models import UserActivation, Comic
-import datetime, random, sha
-import smtplib
 from email.mime.text import MIMEText
 from django.contrib.auth import authenticate, login, logout
-import httplib
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
+
+def searchComics(searchValue, pageIndex, pageSize):
+    if pageIndex <= 0:
+        pageIndex = 1
+    
+    comics = Comic.objects.filter(title__icontains=searchValue).order_by('datecreated')
+    paginator = Paginator(comics, pageSize)
+    
+    try:
+        page = paginator.page(pageIndex)
+    except (EmptyPage, InvalidPage):
+        page = paginator.page(paginator.num_pages)
+    
+    return page    
 
 def resetPassword(email, password, activationKey):
     record = UserActivation.objects.get(activationKey=activationKey)    

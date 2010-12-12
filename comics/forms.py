@@ -3,6 +3,7 @@ from comics.models import UserActivation
 from django.core.validators import RegexValidator
 from django import forms
 
+
 class PasswordResetForm(forms.Form):
     email = forms.EmailField(max_length=128, required=True, error_messages = { 'invalid':'Enter a valid email address.' })   
     password = forms.CharField(max_length=24, widget=forms.PasswordInput, required=True)

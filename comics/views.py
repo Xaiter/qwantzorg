@@ -5,9 +5,34 @@ from comics.forms import CreateAccountForm, CreateComicForm, RequestPasswordRese
 from comics.models import Comic, User, UserActivation
 from django.core.context_processors import csrf
 from django.template import RequestContext
-import logic 
+import logic, urllib, string
 
 # Create your views here.
+
+def searchComics(request, searchValue=None):
+    pageIndex = 1
+    if request
+        
+    return searchComicsPage(request, searchValue, 1)
+
+def searchComicsPage(request, searchValue, pageIndex):
+    if searchValue == None:
+        searchValue = ""
+                
+    if request.method == "POST":                
+        searchValue = urllib.quote_plus(request.POST.get("search").replace("/",""))
+        destinationUrl = "/comic/search/" + searchValue        
+        return HttpResponseRedirect(destinationUrl)
+        
+    if searchValue != "":    
+        page = logic.searchComics(searchValue.strip(), pageIndex, 1)
+    else:
+        page = None
+            
+    contextData = { 'page' : page, 'searchValue' : searchValue }
+    context = RequestContext(request, contextData)
+    context.update(csrf(request))
+    return render_to_response('comicSearch.html', context)
 
 def resetPasswordSent(request):
     return render_to_response('resetPasswordSent.html', None)

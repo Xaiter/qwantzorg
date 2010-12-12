@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Wait, this isn't Dinosaur Comics! - Log In</title> 
+  <link rel="stylesheet" type="text/css" href="/media/css/main.css" />
+</head>
+<body>
+  {% include 'userBar.html' %}
+  <form method="POST">    
+    {% csrf_token %}  
+    <div>
+      <label for="search">Search:</label>
+      <input type="text" name="search" id="search" value="{{searchValue}}" />
+      <input type="submit" value="Search" />
+    </div>
+    {% include 'comicList.html' %}
+  </form>
+</body>
+</html>
