@@ -1,0 +1,92 @@
+        body
+        {
+            font-family: verdana;
+            font-size: 13px;
+        }
+        div
+        {
+            border: none;
+            padding-top: 0px;
+            margin-top: 0px;
+            padding-bottom: 0px;
+            padding-top: 0px;
+            margin-left: 0px;
+            margin-right: 0px;
+        }
+    
+        .panelDiv
+        {
+            overflow: hidden; 
+            display: inline-block;
+        }
+    
+        .panel1 
+        { 
+            height: 244px; 
+            width: 243px; 
+        } 
+        .panel2
+        { 
+            height: 244px; 
+            width: 130px; 
+        } 
+        .panel3
+        { 
+            height: 244px; 
+            width: 362px; 
+        }            
+        .panel4 
+        { 
+            height: 258px; 
+            width: 194px; 
+        } 
+        .panel5
+        { 
+            height: 258px;
+            width: 298px; 
+        } 
+        .panel6
+        { 
+            height: 258px; 
+            width: 243px; 
+        }     
+        
+        
+        .comicImage
+        {
+            display: inline-block;
+        }
+        .image2
+        {
+            position: relative;
+            left: -243px;
+        }
+        .image3
+        {
+ 
+            position: relative;
+            left: -373px;
+        }    
+        .image4
+        {
+            position: relative;
+            top: -243px;
+        }      
+        .image5
+        {
+            position: relative;
+            left: -194px;
+            top: -243px;
+        }      
+        .image6
+        {
+            position: relative;
+            left: -492px;
+            top: -243px;
+        }
+        
+        .center
+        {
+            margin-left: auto; 
+            margin-right: auto;
+        }

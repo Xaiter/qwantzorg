@@ -1,0 +1,35 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+    <title>Wait, this isn't Dinosaur Comics!</title> <!-- Oh snap! -->    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>     
+    <link rel="stylesheet" type="text/css" href="/media/css/main.css" />
+</head> 
+<body> 
+    <form> 
+        {% csrf_token %}  
+        {% include 'userBar.html' %}          
+        
+        <div style="width: 750px" class="center">
+          <h1>{{ comicTitle }} by {{ comicCreator }}</h1>
+          <div class="center"><div class="panelDiv panel1"> 
+                    <img src="{{ panel1Url }}" id="image1" class="comicImage image1" /> 
+                </div><div class="panelDiv panel2"> 
+                    <img src="{{ panel2Url }}" id="image2" class="comicImage image2" /> 
+                </div><div class="panelDiv panel3"> 
+                    <img src="{{ panel3Url }}" id="image3" class="comicImage image3" /> 
+                </div></div><div class="center"><div class="panelDiv panel4"> 
+                    <img src="{{ panel4Url }}" id="image4" class="comicImage image4" /> 
+                </div><div class="panelDiv panel5"> 
+                    <img src="{{ panel5Url }}" id="image5" class="comicImage image5" /> 
+                </div><div class="panelDiv panel6"> 
+                    <img src="{{ panel6Url }}" id="image6" class="comicImage image6" /> 
+                </div> 
+            </div> 
+        </div>         
+    </form> 
+</body> 
+</html> 
+ 
+ 

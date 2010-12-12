@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Wait, this isn't Dinosaur Comics! - Log In</title>	
+	<link rel="stylesheet" type="text/css" href="/media/css/main.css" />
+</head>
+<body>
+  {% include 'userBar.html' %}
+  <form method="POST">    
+    {% csrf_token %}  
+    {% if errorMessage != None %}
+      {{ errorMessage }}
+    {% endif %}
+    <div class="center" style="width: 300px; border: black 1px solid;">
+      <div><label for="username">Username</label><input type="text" name="username" id="username" /></div>
+      <div><label for="password">Password</label><input type="password" name="password" id="password" /></div>
+      <div><input type="submit" value="Log In" /><a style="float: right;" href="../account/create/">Create Account</a></div>
+    </div>
+    <a href="/comic/account/reset">Forgot Password?</a>
+  </form>
+</body>
+</html>

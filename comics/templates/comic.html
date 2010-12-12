@@ -1,0 +1,238 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+    <title>Wait, this isn't Dinosaur Comics!</title> <!-- Oh snap! -->    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>     
+    <link rel="stylesheet" type="text/css" href="/media/css/main.css" />
+</head> 
+<body> 
+    <form method="POST"> 
+        {% csrf_token %}  
+        {% include 'userBar.html' %}  
+        {% if user.is_authenticated %}      
+
+          {% if errors != None %}
+            {% for error in errors %}
+              {{error}}
+            {% endfor %}
+          {% endif %}
+
+        <div style="width: 750px" class="center">
+          {% if existingComicId != None and existingComicUser != None %}
+          <div>
+            Aw, {{existingComicUser}} <a href="/comic/{{existingComicId}}/">beat you to it</a>!
+          </div>
+          {% endif %}
+          <label for="title">Comic Title:</label> 
+          <input type="text" maxlength="128" id="title" name="title" style="width: 400px;" /> 
+          <input type="submit" value="Submit Comic!" />          
+        </div>     
+   
+        {% endif %}
+        <div style="width: 750px" class="center"><div class="center"><div class="panelDiv panel1"> 
+                    <img src="loading.gif" id="image1" class="comicImage image1" onerror="RandomizePanel(0);" /> 
+                </div><div class="panelDiv panel2"> 
+                    <img src="loading.gif" id="image2" class="comicImage image2" onerror="RandomizePanel(1);" /> 
+                </div><div class="panelDiv panel3"> 
+                    <img src="loading.gif" id="image3" class="comicImage image3" onerror="RandomizePanel(2);" /> 
+                </div></div><div class="center"><div class="panelDiv panel4"> 
+                    <img src="loading.gif" id="image4" class="comicImage image4" onerror="RandomizePanel(3);" /> 
+                </div><div class="panelDiv panel5"> 
+                    <img src="loading.gif" id="image5" class="comicImage image5" onerror="RandomizePanel(4);" /> 
+                </div><div class="panelDiv panel6"> 
+                    <img src="loading.gif" id="image6" class="comicImage image6" onerror="RandomizePanel(5);" /> 
+                </div> 
+            </div> 
+        </div> 
+        <div style="width: 750px;" class="center"> 
+            <div style="display: block; width: 100%; text-align: right; padding-bottom: 10px;"> 
+                <a id="permalink">(Sorta!) Permalink this comic!</a> 
+            </div> 
+            <div style="display: inline-block; float: left; width: 200px; padding-right: 10px; height: 500px;"> 
+                <div> 
+                    <input style="width: 100%;" type="button" onclick="RandomizePanels()" value="Randomize (ohcah)" />                     
+                </div>                 
+                <table> <!-- I could not make the div tables look the way I wanted and this is tabluar data technically sorta --> 
+                    <tr> 
+                        <th>&nbsp;</th> 
+                        <th>&nbsp;</th> 
+                        <th style="text-align:center;">Lock</th> 
+                    </tr> 
+                    <tr> 
+                        <td>Panel 1:</td> 
+                        <td><input type="text" size="4" maxlength="4" id="panel1Id" name="panel1Id" /></td> 
+                        <td style="text-align:center;"><input type="checkbox" id="cbxLockPanel1" /></td> 
+                    </tr> 
+                    <tr> 
+                        <td>Panel 2:</td> 
+                        <td><input type="text" size="4" maxlength="4" id="panel2Id" name="panel2Id" /> </td> 
+                        <td style="text-align:center;"><input type="checkbox" id="cbxLockPanel2" /> </td> 
+                    </tr>       
+                    <tr> 
+                        <td>Panel 3:</td> 
+                        <td><input type="text" size="4" maxlength="4" id="panel3Id" name="panel3Id" /> </td> 
+                        <td style="text-align:center;"><input type="checkbox" id="cbxLockPanel3" /></td> 
+                    </tr>                                       
+                    <tr> 
+                        <td>Panel 4:</td> 
+                        <td><input type="text" size="4" maxlength="4" id="panel4Id" name="panel4Id" /> </td> 
+                        <td style="text-align:center;"><input type="checkbox" id="cbxLockPanel4" /> </td> 
+                    </tr>                       
+                    <tr> 
+                        <td>Panel 5:</td> 
+                        <td><input type="text" size="4" maxlength="4" id="panel5Id" name="panel5Id" /> </td> 
+                        <td style="text-align:center;"><input type="checkbox" id="cbxLockPanel5" /> </td> 
+                    </tr>       
+                    <tr> 
+                        <td>Panel 6:</td> 
+                        <td><input type="text" size="4" maxlength="4" id="panel6Id" name="panel6Id" /> </td> 
+                        <td style="text-align:center;"><input type="checkbox" id="cbxLockPanel6" /> </td> 
+                    </tr>                               
+                    <tr> 
+                        <td>&nbsp;</td> 
+                        <td style="text-align: center;" colspan="2"> 
+                            <input id="btnUpdate" style="width: 100%" type="button" value="Create Comedy" onclick="SetImagesByInputs(); return false;" />                               
+                        </td> 
+                    </tr>                                       
+                </table>    
+            </div>                                  
+        </div> 
+        
+        <script type="text/javascript"> 
+        
+        var isComicViewed = false;
+        
+        var images = new Array();
+        var inputs = new Array();
+        var locks = new Array();
+        var cachedUrl = new Array();
+         
+        var permalink = $("#permalink")[0];
+ 
+        var latest = 1000;
+        $.ajax({async: false, success: function(data){latest=parseInt(data);},
+                url: "latest"});
+        
+        function GetComicUrl(comicId)
+        {
+            return "http://www.qwantz.com/comics/comic2-" + comicId + ".png";
+        }
+        
+        function SetLoadingImage(panelIndex)
+        {
+            images[panelIndex].src = "loading.gif";
+        }
+        
+        function GetRandomComicId()
+        {
+            return Math.floor(Math.random()*latest)+1;
+        }        
+                
+        function SetPanelImage(panelIndex, comicId)
+        {            
+            SetLoadingImage(panelIndex);
+            inputs[panelIndex].value = comicId;
+            images[panelIndex].src = GetComicUrl(comicId);   
+            
+            UpdateUrlHashFromInputs();         
+        }
+        
+        function SetImagesByInputs()
+        {
+            for(var i = 0; i < images.length; i++)
+                SetPanelImage(i, inputs[i].value);                
+        }          
+        
+        function RandomizePanel(panelIndex)
+        {            
+            SetPanelImage(panelIndex, GetRandomComicId());
+        }        
+        
+        function RandomizePanels()
+        {                
+            for(var i = 0; i < images.length; i++)
+                if(!locks[i].checked)
+                    RandomizePanel(i);
+        }        
+        
+        function UpdateUrlHashFromInputs()
+        {
+            var hashString = "";
+            
+            for(var i = 0; i < inputs.length; i++)
+                hashString += inputs[i].value + "," + locks[i].checked + "-";
+            
+            hashString = hashString.substring(0, hashString.length-1);
+            
+            window.location.hash = hashString;
+            permalink.href = window.location;
+        }
+        
+        function SetAllPanelsToImageSrc(image)
+        {
+            if(isComicViewed)
+                return;
+        
+            for(var i = 0; i < images.length; i++)
+            {
+                cachedUrl[i] = images[i].src;
+                images[i].src = image.src;
+            }
+            
+            isComicViewed = true;
+        }
+        
+        function ResetAllPanelImageSrc()
+        {
+            if(!isComicViewed)
+                return;
+ 
+            for(var i = 0; i < images.length; i++)
+                images[i].src = cachedUrl[i];
+                
+            isComicViewed = false;
+        }
+        
+        function InitializeBoringData()
+        {
+            for(var i = 1; i < 7; i++)
+            {
+                images[i-1] = $("#image"+i)[0];
+                locks[i-1] =  $("#cbxLockPanel"+i)[0];
+                inputs[i-1] =  $("#panel"+i+"Id")[0];
+                cachedUrl[i-1] = "";
+            }
+            
+            $(".comicImage").bind("click", function() { SetAllPanelsToImageSrc(this); });
+            $(".comicImage").bind("mouseout", function() { ResetAllPanelImageSrc(); });
+        }
+                
+        function LoadHilariousInternetComedyFromUrlHash()
+        {
+            var hashPieces = window.location.hash.split("-");
+            if(hashPieces.length != 6)
+            {
+                RandomizePanels();
+                return;
+            }
+            
+            hashPieces[0] = hashPieces[0].substring(1);
+            
+            for(var i = 0; i < hashPieces.length && i < images.length; i++)
+            {
+                var pieces = hashPieces[i].split(",");
+                SetPanelImage(i, pieces[0]);
+                locks[i].checked = pieces[1] != "false";                
+            }
+        }        
+        
+        InitializeBoringData();
+        LoadHilariousInternetComedyFromUrlHash();
+        </script> 
+        <!-- suddenly, kittens! everywhere!! --> 
+    </form> 
+</body> 
+</html> 
+ 
+ 
