@@ -5,11 +5,22 @@ from email.mime.text import MIMEText
 from django.contrib.auth import authenticate, login, logout
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
+def getLatestComics():
+    comics = Comic.objects.all().order_by('datecreated').reverse()[:10]
+    paginator = Paginator(comics, 10)
+    
+    try:
+        page = paginator.page(1)
+    except (EmptyPage, InvalidPage):
+        page = paginator.page(paginator.num_pages)
+    
+    return page
+    
 def searchComics(searchValue, pageIndex, pageSize):
     if pageIndex <= 0:
         pageIndex = 1
     
-    comics = Comic.objects.filter(title__icontains=searchValue).order_by('datecreated')
+    comics = Comic.objects.filter(title__icontains=searchValue).order_by('datecreated').reverse()
     paginator = Paginator(comics, pageSize)
     
     try:

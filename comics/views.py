@@ -11,9 +11,10 @@ import logic, urllib, string
 
 def searchComics(request, searchValue=None):
     pageIndex = 1
-    if request
-        
-    return searchComicsPage(request, searchValue, 1)
+    if request.GET.get("page") != None:
+        pageIndex = int(request.GET.get("page"))
+            
+    return searchComicsPage(request, searchValue, pageIndex)
 
 def searchComicsPage(request, searchValue, pageIndex):
     if searchValue == None:
@@ -25,7 +26,7 @@ def searchComicsPage(request, searchValue, pageIndex):
         return HttpResponseRedirect(destinationUrl)
         
     if searchValue != "":    
-        page = logic.searchComics(searchValue.strip(), pageIndex, 1)
+        page = logic.searchComics(searchValue.strip(), pageIndex, 25)
     else:
         page = None
             
@@ -77,8 +78,10 @@ def resetPasswordRequest(request):
     return render_to_response('resetPasswordRequest.html', context)  
 
 def newComic(request):
+    page = logic.getLatestComics()
+    
     if request.method == "GET":
-        context = RequestContext(request, None)
+        context = RequestContext(request, { "page" : page })
         context.update(csrf(request))        
         return render_to_response('comic.html', context)
     
@@ -110,7 +113,13 @@ def newComic(request):
     else:
         errors = form.errors
     
-    context = RequestContext(request, { "errors" : errors, "existingComicId" : existingComicId, "existingComicUser" : existingComicUser })
+    
+    context = RequestContext(request, { 
+                                       "errors" : errors, 
+                                       "existingComicId" : existingComicId, 
+                                       "existingComicUser" : existingComicUser,
+                                       "page" : page
+                                       })
     context.update(csrf(request))        
     return render_to_response('comic.html', context)    
             

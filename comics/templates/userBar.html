@@ -1,10 +1,11 @@
 <div>
-    <a href="/comic/">Home</a> 
+    <a href="/comic/">Home</a>
+    | <a href="/comic/search">Search</a> 
     {% if user.is_authenticated %}
       | <a href="/comic/account/logout">Log out</a> |
     {% else %}      
       | <a href="/comic/login/">Log in</a> | 
       | <a href="/comic/account/create">Sign up</a>      
-    {% endif %}
+    {% endif %}    
     | <a href="/comic/about">About</a>
 </div>
