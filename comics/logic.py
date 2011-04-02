@@ -51,10 +51,10 @@ def initiatePasswordReset(email):
         record = createUserActivationRecord(user)
     
     emailSubject = "qwantz.org Password Reset"
-    emailBody = "Oh, hi!  You should probably click the following link to reset your password.  If you didn't request this password reset, ignore it.  Someone's just trying to annoy you.  If you did, then by all means, click it! It will expire in one day!\n\n http://momo/comic/account/reset/" + record.activationKey 
+    emailBody = "Oh, hi!  You should probably click the following link to reset your password.  If you didn't request this password reset, ignore it.  Someone's just trying to annoy you.  If you did, then by all means, click it! It will expire in one day!\n\n http://qwantz.org/comic/account/reset/" + record.activationKey 
 
     #I am dumb and cannot get email to work locally, so pffft.  I'll just disable this for now.
-    #sendEmail(emailSubject, emailBody, user.email, 'xaiter@qwantz.org')
+    sendEmail(emailSubject, emailBody, user.email)
     
 
 def createComic(user, title, panel1Id, panel2Id, panel3Id, panel4Id, panel5Id, panel6Id):
@@ -83,10 +83,9 @@ def createUser(username, password, email):
     activationRecord = createUserActivationRecord(user)
     
     emailSubject = "qwantz.org Account Confirmation"
-    emailBody = "Oh, hi!  You should probably click the following link to activate your account.  It will expire in one day, releasing the username and password for use again.\n\n http://momo/comic/account/activate/%s"
-
-    #I am dumb and cannot get email to work locally, so pffft.  I'll just disable this for now.
-    #sendEmail(emailSubject, emailBody, user.email, 'xaiter@qwantz.org')    
+    emailBody = "Oh, hi!  You should probably click the following link to activate your account.  It will expire in one day, releasing the username and password for use again.\n\n http://qwantz.org/comic/account/activate/" + activationRecord.activationKey 
+    
+    sendEmail(emailSubject, emailBody, user.email)    
 
 def createUserActivationRecord(user):
     salt = sha.new(str(random.random())).hexdigest()[:5]
@@ -127,15 +126,6 @@ def loginUser(request,username, password):
 def logoutUser(request):    
     logout(request)
 
-def getActivationUrlForUser(username):    
-    try:
-        user = User.objects.get(username__iexact=username)
-        record = UserActivation.objects.get(user=user)
-    except User.DoesNotExist:
-        return None
-                
-    return "http://momo/comic/account/activate/%s" % (record.activationKey)
-
 def verifyComicPanelIds(panelIds):    
     for panelId in panelIds:
         if not verifyComicPanelId(panelId):
@@ -154,12 +144,14 @@ def verifyComicPanelId(panelId):
     
     return response.status == 200    
     
-def sendEmail(emailSubject, emailBody, emailTo, emailFrom):
+def sendEmail(emailSubject, emailBody, emailTo):    
+    emailUser = 'xaiter@qwantz.org'
+    
     msg = MIMEText(emailBody)
     msg['Subject'] = emailSubject
-    msg['From'] = emailFrom
+    msg['From'] = emailUser    
     msg['To'] = emailTo
     
-    smtpServer = smtplib.SMTP('momo')
-    smtpServer.sendmail(emailFrom, emailTo, msg.as_string())
+    smtpServer = smtplib.SMTP('localhost')
+    smtpServer.sendmail(emailUser, emailTo, msg.as_string())    
     

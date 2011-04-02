@@ -12,7 +12,10 @@ import logic, urllib, string
 def searchComics(request, searchValue=None):
     pageIndex = 1
     if request.GET.get("page") != None:
-        pageIndex = int(request.GET.get("page"))
+        try:
+            pageIndex = int(request.GET.get("page"))
+        except ValueError:
+            pageIndex = 1
             
     return searchComicsPage(request, searchValue, pageIndex)
 
@@ -157,21 +160,19 @@ def login(request):
 
 def createAccount(request):           
     form = None
-    errors = None
-    activationUrl = None
+    errors = None    
     
     if request.method == "POST":
         form = CreateAccountForm(request.POST)
         if form.is_valid():
             logic.createUser(form.cleaned_data.get("username"), form.cleaned_data.get("password"), form.cleaned_data.get("email"))
-            #return HttpResponseRedirect("/comic/account/create/thanks") # for the actual "production" environment
-            activationUrl = logic.getActivationUrlForUser(form.cleaned_data.get("username"))
+            return HttpResponseRedirect("/comic/account/create/thanks")            
         else:
             errors = form.errors
     else:
         form = CreateAccountForm()
     
-    context = RequestContext(request, { 'form' : form, "errors" : errors, 'activationUrl' : activationUrl })    
+    context = RequestContext(request, { 'form' : form, "errors" : errors })    
     context.update(csrf(request))
     return render_to_response('create_account.html', context)
 

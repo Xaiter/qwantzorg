@@ -7,4 +7,5 @@ admin.autodiscover()
 urlpatterns = patterns('',
     (r'^comic/', include('comics.urls')),    
     (r'^admin/', include(admin.site.urls)),
+    (r'^$', 'django.views.generic.simple.redirect_to', {'url': '/comic/'}),
 )

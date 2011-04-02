@@ -9,17 +9,22 @@
 </head>
 <body>
   {% include 'userBar.html' %}
-  <form method="POST">    
+  <form method="POST">       
     {% csrf_token %}  
+    <div class="center" style="width: 300px;">
     {% if errorMessage != None %}
       {{ errorMessage }}
-    {% endif %}
-    <div class="center" style="width: 300px; border: black 1px solid;">
+    {% endif %}      
       <div><label for="username">Username</label><input type="text" name="username" id="username" /></div>
       <div><label for="password">Password</label><input type="password" name="password" id="password" /></div>
-      <div><input type="submit" value="Log In" /><a style="float: right;" href="../account/create/">Create Account</a></div>
-    </div>
-    <a href="/comic/account/reset">Forgot Password?</a>
+      <div>
+        <input type="submit" value="Log In" />
+        <div style="float: right;">
+          <a style="display:block;" href="../account/create/">Create Account</a>
+          <a href="/comic/account/reset">Forgot Password?</a>
+        </div>
+      </div>
+    </div>    
   </form>
 </body>
 </html>
